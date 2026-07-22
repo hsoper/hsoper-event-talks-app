@@ -2,6 +2,7 @@
     --bg-dark: #0f172a;
     --bg-card: #1e293b;
     --bg-card-hover: #2d3748;
+    --bg-card-selected: linear-gradient(180deg, #1e293b 0%, #172554 100%);
     --accent-blue: #38bdf8;
     --accent-indigo: #6366f1;
     --accent-twitter: #1d9bf0;
@@ -13,6 +14,34 @@
     --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
     --radius: 16px;
     --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --header-bg: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
+    --textarea-bg: #0f172a;
+    --brand-text-from: #ffffff;
+    --brand-text-to: #94a3b8;
+    --info-bg: rgba(255, 255, 255, 0.03);
+    --info-border: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="light"] {
+    --bg-dark: #f8fafc;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f1f5f9;
+    --bg-card-selected: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%);
+    --accent-blue: #0284c7;
+    --accent-indigo: #4f46e5;
+    --accent-twitter: #1d9bf0;
+    --accent-twitter-hover: #1a8cd8;
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+    --header-bg: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+    --textarea-bg: #f8fafc;
+    --brand-text-from: #0f172a;
+    --brand-text-to: #475569;
+    --info-bg: rgba(0, 0, 0, 0.03);
+    --info-border: rgba(0, 0, 0, 0.06);
 }
 
 * {
@@ -30,7 +59,7 @@ body {
 }
 
 .app-header {
-    background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
+    background: var(--header-bg);
     border-bottom: 1px solid var(--border-color);
     padding: 1.5rem 2rem;
     position: sticky;
@@ -45,6 +74,31 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.theme-toggle-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.theme-toggle-btn:hover {
+    background: var(--bg-card-hover);
+    transform: scale(1.05);
 }
 
 .brand {
@@ -68,7 +122,7 @@ body {
 .brand h1 {
     font-size: 1.35rem;
     font-weight: 700;
-    background: linear-gradient(90deg, #ffffff, #94a3b8);
+    background: linear-gradient(90deg, var(--brand-text-from), var(--brand-text-to));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -219,7 +273,7 @@ body {
 
 .note-card.selected {
     border-color: var(--accent-twitter);
-    background: linear-gradient(180deg, #1e293b 0%, #172554 100%);
+    background: var(--bg-card-selected);
     box-shadow: 0 0 0 2px var(--accent-twitter);
 }
 
@@ -332,11 +386,11 @@ body {
 .selected-info {
     font-size: 0.825rem;
     color: var(--text-muted);
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--info-bg);
     padding: 0.6rem 0.8rem;
     border-radius: 8px;
     margin-bottom: 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--info-border);
 }
 
 .tweet-textarea-wrapper {
@@ -347,7 +401,7 @@ body {
 .tweet-textarea {
     width: 100%;
     min-height: 180px;
-    background-color: #0f172a;
+    background-color: var(--textarea-bg);
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 0.85rem;
@@ -408,7 +462,7 @@ body {
 }
 
 .skeleton {
-    background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+    background: linear-gradient(90deg, var(--border-color) 25%, var(--bg-card-hover) 50%, var(--border-color) 75%);
     background-size: 200% 100%;
     animation: loading 1.5s infinite;
     border-radius: 8px;
