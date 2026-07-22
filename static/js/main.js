@@ -1,5 +1,6 @@
 let allNotes = [];
 let selectedNoteId = null;
+let selectedCategory = 'all';
 
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
@@ -7,16 +8,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const refreshBtn = document.getElementById('refreshBtn');
     const searchInput = document.getElementById('searchInput');
+    const clearSearchBtn = document.getElementById('clearSearchBtn');
     const tweetTextarea = document.getElementById('tweetTextarea');
     const tweetSubmitBtn = document.getElementById('tweetSubmitBtn');
     const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const chipBtns = document.querySelectorAll('.chip-btn');
 
     refreshBtn.addEventListener('click', () => {
         fetchReleaseNotes();
     });
 
     searchInput.addEventListener('input', (e) => {
-        filterNotes(e.target.value);
+        const val = e.target.value;
+        clearSearchBtn.style.display = val.trim() ? 'flex' : 'none';
+        filterNotes();
+    });
+
+    clearSearchBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        clearSearchBtn.style.display = 'none';
+        filterNotes();
+        searchInput.focus();
+    });
+
+    chipBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            chipBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedCategory = btn.getAttribute('data-chip');
+            filterNotes();
+        });
     });
 
     tweetTextarea.addEventListener('input', () => {
@@ -87,8 +108,7 @@ async function fetchReleaseNotes() {
 
         if (data.status === 'success') {
             allNotes = data.notes;
-            feedMeta.textContent = `Showing ${allNotes.length} updates • Updated ${formatDate(data.feed_updated)}`;
-            renderNotes(allNotes);
+            filterNotes();
             
             // Auto select the first note if none selected
             if (allNotes.length > 0 && !selectedNoteId) {
@@ -120,7 +140,13 @@ function renderNotes(notes) {
     const notesContainer = document.getElementById('notesContainer');
 
     if (notes.length === 0) {
-        notesContainer.innerHTML = `<div class="empty-state">No release notes matching your search.</div>`;
+        notesContainer.innerHTML = `
+            <div class="empty-state">
+                <p style="font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--text-primary);">No release notes found</p>
+                <p style="margin-bottom: 1rem;">Try adjusting your keyword search or category filter.</p>
+                <button onclick="resetFilters()" class="action-btn" style="margin: 0 auto; display: inline-flex;">Reset Filters</button>
+            </div>
+        `;
         return;
     }
 
@@ -148,19 +174,61 @@ function renderNotes(notes) {
     }).join('');
 }
 
-function filterNotes(query) {
-    const q = query.toLowerCase().trim();
-    if (!q) {
-        renderNotes(allNotes);
-        return;
+function filterNotes() {
+    const searchInput = document.getElementById('searchInput');
+    const feedMeta = document.getElementById('feedMeta');
+    const q = searchInput.value.toLowerCase().trim();
+
+    let filtered = allNotes;
+
+    // Filter by Category Chip
+    if (selectedCategory !== 'all') {
+        const categoryKeywords = {
+            'SQL': ['sql', 'function', 'query', 'operator', 'select', 'table'],
+            'BigLake': ['biglake', 'iceberg', 'delta', 'parquet', 'hudi', 'lake'],
+            'Spark': ['spark', 'dataproc', 'pyspark', 'jar'],
+            'Storage': ['storage', 'load', 'gcs', 'export', 'import', 'write', 'read'],
+            'Security': ['security', 'governance', 'iam', 'kms', 'masking', 'policy', 'role', 'permission', 'row-level'],
+            'Performance': ['performance', 'optimize', 'index', 'partition', 'cluster', 'slot', 'speed']
+        };
+
+        const keywords = categoryKeywords[selectedCategory] || [selectedCategory.toLowerCase()];
+        filtered = filtered.filter(note => {
+            const text = (note.title + ' ' + note.clean_text).toLowerCase();
+            return keywords.some(kw => text.includes(kw));
+        });
     }
 
-    const filtered = allNotes.filter(note => {
-        return note.title.toLowerCase().includes(q) || 
-               note.clean_text.toLowerCase().includes(q);
+    // Filter by Search Query
+    if (q) {
+        filtered = filtered.filter(note => {
+            return note.title.toLowerCase().includes(q) || 
+                   note.clean_text.toLowerCase().includes(q);
+        });
+    }
+
+    feedMeta.textContent = `Showing ${filtered.length} of ${allNotes.length} updates`;
+    renderNotes(filtered);
+}
+
+function resetFilters() {
+    const searchInput = document.getElementById('searchInput');
+    const clearSearchBtn = document.getElementById('clearSearchBtn');
+    const chipBtns = document.querySelectorAll('.chip-btn');
+
+    searchInput.value = '';
+    clearSearchBtn.style.display = 'none';
+    selectedCategory = 'all';
+
+    chipBtns.forEach(b => {
+        if (b.getAttribute('data-chip') === 'all') {
+            b.classList.add('active');
+        } else {
+            b.classList.remove('active');
+        }
     });
 
-    renderNotes(filtered);
+    filterNotes();
 }
 
 function selectNoteForTweet(noteId) {
