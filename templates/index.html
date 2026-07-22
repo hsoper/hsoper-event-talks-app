@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BigQuery Release Notes & X/Tweet Sharer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand">
+                <div class="brand-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                </div>
+                <div>
+                    <h1>BigQuery Release Hub</h1>
+                </div>
+                <span>Live Feed</span>
+            </div>
+            <button id="refreshBtn" class="refresh-btn" title="Refresh Release Notes">
+                <span class="spinner"></span>
+                <svg class="icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                <span>Refresh Notes</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <section class="feed-section">
+            <div class="feed-header">
+                <div class="feed-title-area">
+                    <h2>Release Notes</h2>
+                    <div id="feedMeta" class="feed-meta">Loading latest updates...</div>
+                </div>
+            </div>
+
+            <div class="search-filter">
+                <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="searchInput" placeholder="Search release notes by keyword (e.g. Iceberg, SQL, Spark)...">
+            </div>
+
+            <div id="notesContainer" class="notes-list">
+                <!-- Dynamically populated -->
+            </div>
+        </section>
+
+        <aside class="composer-panel">
+            <div class="composer-card">
+                <h3>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    Tweet Composer
+                </h3>
+                
+                <div id="selectedInfo" class="selected-info">
+                    Select an update to tweet about it.
+                </div>
+
+                <div class="tweet-textarea-wrapper">
+                    <textarea id="tweetTextarea" class="tweet-textarea" placeholder="Draft your tweet here..."></textarea>
+                </div>
+
+                <div class="char-counter">
+                    <span>Draft Preview</span>
+                    <span id="charCount" class="char-count">0/280</span>
+                </div>
+
+                <button id="tweetSubmitBtn" class="tweet-submit-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    Post to X / Tweet
+                </button>
+            </div>
+        </aside>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
